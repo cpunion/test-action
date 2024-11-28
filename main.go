@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	_ "github.com/goplus/llgo/c"
+)
 
 func main() {
 	fmt.Println("Hello, main!")
