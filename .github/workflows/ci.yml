@@ -27,7 +27,7 @@ jobs:
 
     - name: Show LLGo info
       run: |
-        where llgo
+        which llgo
         llgo version
 
     - name: Build
