@@ -8,16 +8,36 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        llgo-version: ['0.9.8', '0.9', 'latest', 'main', 'v0.9']
+        os: ['ubuntu-24.04', 'windows-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Set up Go+
-      uses: cpunion/setup-goplus@impl-with-go
+      uses: cpunion/setup-llgo@llgo
       with:
         go-version: '1.22'
-        gop-version: '1.2.6'
+        llgo-version: '0.9'
+
+    - name: Show LLGo info
+      run: |
+        where llgo
+        llgo version
 
     - name: Build
-      run: gop version
+      run: |
+        llgo build ./...
+
+    - name: Run
+      run: |
+        llgo run ./cmd/foo
+
+    - name: Install
+      run: |
+        llgo install ./cmd/foo
