@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        llgo-version: ['0.9.8', '0.9', 'latest', 'main', 'v0.9']
+        os: ['ubuntu-24.04', 'windows-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up LLGo
+      uses: cpunion/setup-llgo@llgo
+      with:
+        go-version: '1.22'
+        llgo-version: '0.9'
+
+    - name: Show LLGo info
+      run: |
+        which llgo
+        llgo version
+
+    - name: Build
+      run: |
+        llgo build ./...
+
+    - name: Run
+      run: |
+        llgo run ./cmd/foo
+
+    - name: Install
+      run: |
+        llgo install ./cmd/foo
